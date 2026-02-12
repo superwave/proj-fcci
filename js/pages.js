@@ -211,7 +211,7 @@
             return `
                 <a href="${page('post.html')}?p=${n.id}${lang === 'en' ? '&lang=en' : ''}" class="project-post-item">
                     <div class="project-post-thumb">
-                        <img src="${img('news/' + n.image)}" alt="${title}">
+                        ${n.image ? `<img src="${img('news/' + n.image)}" alt="${title}">` : ''}
                     </div>
                     <div class="project-post-info">
                         <h3>${title}</h3>
@@ -427,10 +427,77 @@
         }
     });
 
+    // --- News / Reports shared pagination state ---
+    let _newsPage = 1;
+    const NEWS_PER_PAGE = 10;
+
+    function getNewsPosts(category) {
+        const all = window.i18n.getAllNews();
+        if (category === 'news') {
+            // News articles: category "news" that have no projects OR are flagged as newsArticle
+            return all.filter(n => n.category === 'news' && (!n.projects || n.projects.length === 0 || n.newsArticle));
+        }
+        return all.filter(n => n.category === category);
+    }
+
+    function renderNewsListContent(category) {
+        const lang = window.i18n.getLang();
+        const posts = getNewsPosts(category);
+
+        if (posts.length === 0) {
+            return `<p class="no-posts">${lang === 'en' ? 'No articles yet.' : '尚無相關文章。'}</p>`;
+        }
+
+        const totalPages = Math.ceil(posts.length / NEWS_PER_PAGE);
+        if (_newsPage > totalPages) _newsPage = totalPages;
+        const start = (_newsPage - 1) * NEWS_PER_PAGE;
+        const pagePosts = posts.slice(start, start + NEWS_PER_PAGE);
+
+        const cardsHtml = pagePosts.map(n => window.renderNewsCard(n)).join('');
+        const paginationHtml = totalPages > 1 ? renderNewsPagination(_newsPage, totalPages) : '';
+
+        return cardsHtml + paginationHtml;
+    }
+
+    function renderNewsPagination(current, total) {
+        let items = '';
+        items += `<li class="${current === 1 ? 'disabled' : ''}">
+            <a href="#" onclick="window.newsGoToPage(${current - 1}, event)"${current === 1 ? ' tabindex="-1"' : ''}>&laquo;</a>
+        </li>`;
+
+        const pages = buildPageNumbers(current, total);
+        pages.forEach(p => {
+            if (p === '...') {
+                items += `<li class="ellipsis"><span>…</span></li>`;
+            } else {
+                items += `<li class="${p === current ? 'active' : ''}">
+                    <a href="#" onclick="window.newsGoToPage(${p}, event)">${p}</a>
+                </li>`;
+            }
+        });
+
+        items += `<li class="${current === total ? 'disabled' : ''}">
+            <a href="#" onclick="window.newsGoToPage(${current + 1}, event)"${current === total ? ' tabindex="-1"' : ''}>&raquo;</a>
+        </li>`;
+
+        return `<nav class="pagination" style="--tab-color:#1a5276"><ul>${items}</ul></nav>`;
+    }
+
+    window.newsGoToPage = function(pageNum, event) {
+        if (event) event.preventDefault();
+        const category = document.body.dataset.page === 'reports' ? 'report' : 'news';
+        const posts = getNewsPosts(category);
+        const totalPages = Math.ceil(posts.length / NEWS_PER_PAGE);
+        if (pageNum < 1 || pageNum > totalPages) return;
+        _newsPage = pageNum;
+        document.getElementById('news-list-container').innerHTML = renderNewsListContent(category);
+        document.getElementById('news-list-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
     // --- News List Page ---
     window.renderNewsListPage = function() {
         const lang = window.i18n.getLang();
-        const allNews = window.i18n.getAllNews().filter(n => n.category === 'news');
+        _newsPage = 1;
         return `
             <div class="page-header">
                 <div class="container">
@@ -439,8 +506,8 @@
             </div>
             <div class="page-content">
                 <div class="container">
-                    <div class="news-list">
-                        ${allNews.map(n => window.renderNewsCard(n, true)).join('')}
+                    <div class="news-list" id="news-list-container">
+                        ${renderNewsListContent('news')}
                     </div>
                 </div>
             </div>
@@ -450,7 +517,7 @@
     // --- Reports Page ---
     window.renderReportsPage = function() {
         const lang = window.i18n.getLang();
-        const reports = window.i18n.getAllNews().filter(n => n.category === 'report');
+        _newsPage = 1;
         return `
             <div class="page-header">
                 <div class="container">
@@ -459,8 +526,8 @@
             </div>
             <div class="page-content">
                 <div class="container">
-                    <div class="news-list">
-                        ${reports.map(n => window.renderNewsCard(n, true)).join('')}
+                    <div class="news-list" id="news-list-container">
+                        ${renderNewsListContent('report')}
                     </div>
                 </div>
             </div>

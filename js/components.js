@@ -197,13 +197,14 @@ window.renderNewsCard = function(news, fullWidth = false) {
     const langQ = lang === 'en' ? '&lang=en' : '';
     const title = window.i18n ? window.i18n.getLocalizedField(news, 'title') : news.title_zh;
     const excerpt = window.i18n ? window.i18n.getLocalizedField(news, 'excerpt') : news.excerpt_zh;
+    const imageHtml = news.image
+        ? `<div class="news-card-image"><img src="${basePath('images/news/' + news.image)}" alt="${title}" loading="lazy"></div>`
+        : `<div class="news-card-image news-card-no-image"></div>`;
 
     return `
         <div class="news-card ${fullWidth ? 'full-width' : ''}">
             <a href="${basePath('post.html')}?p=${news.id}${langQ}" class="news-card-link">
-                <div class="news-card-image">
-                    <img src="${basePath('images/news/' + news.image)}" alt="${title}" loading="lazy">
-                </div>
+                ${imageHtml}
                 <div class="news-card-content">
                     <h3 class="news-card-title">${title}</h3>
                     ${excerpt ? `<p class="news-card-excerpt">${excerpt}</p>` : ''}
