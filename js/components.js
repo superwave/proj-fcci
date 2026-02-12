@@ -1,27 +1,30 @@
 // Reusable UI Components
 
+// Helper: resolve path relative to current page
+function basePath(path) { return (window.BASE || '') + path; }
+
 // Navbar Component
 window.renderNavbar = function() {
     const lang = window.i18n ? window.i18n.getLang() : 'zh';
-    const langParam = lang === 'en' ? '&lang=en' : '';
-    const currentPage = new URLSearchParams(window.location.search).get('page') || 'home';
+    const langQ = lang === 'en' ? '?lang=en' : '';
+    const currentPage = document.body.dataset.page || 'home';
 
     const menuItems = [
         {
             id: 'about',
             title_zh: '關於FCCI',
             title_en: 'About FCCI',
-            url: '?page=about'
+            url: basePath('about.html')
         },
         {
             id: 'projects',
             title_zh: '國際合作',
             title_en: 'Projects',
             children: [
-                { id: 'india', title_zh: '印度', title_en: 'India', url: '?page=india' },
-                { id: 'asean', title_zh: '東協', title_en: 'ASEAN', url: '?page=asean' },
-                { id: 'tisec', title_zh: 'TISEC', title_en: 'TISEC', url: '?page=tisec' },
-                { id: 'other', title_zh: '其他', title_en: 'Others', url: '?page=other' }
+                { id: 'india', title_zh: '印度', title_en: 'India', url: basePath('projects/'), hash: '#india' },
+                { id: 'asean', title_zh: '東協', title_en: 'ASEAN', url: basePath('projects/'), hash: '#asean' },
+                { id: 'tisec', title_zh: 'TISEC', title_en: 'TISEC', url: basePath('projects/'), hash: '#tisec' },
+                { id: 'other', title_zh: '其他', title_en: 'Others', url: basePath('projects/'), hash: '#other' }
             ]
         },
         {
@@ -29,32 +32,38 @@ window.renderNavbar = function() {
             title_zh: '產業動態',
             title_en: 'Industry Watch',
             children: [
-                { id: 'news', title_zh: '新聞快訊', title_en: 'News Articles', url: '?page=news' },
-                { id: 'reports', title_zh: '調研報告', title_en: 'Research Papers', url: '?page=reports' }
+                { id: 'news', title_zh: '新聞快訊', title_en: 'News Articles', url: basePath('news/') },
+                { id: 'reports', title_zh: '調研報告', title_en: 'Research Papers', url: basePath('news/reports.html') }
             ]
         },
         {
             id: 'contact',
             title_zh: '聯絡我們',
             title_en: 'Contact us',
-            url: '?page=contact'
+            url: basePath('contact.html')
         }
     ];
+
+    const currentHash = window.location.hash.replace('#', '');
 
     function renderMenuItem(item) {
         const title = lang === 'en' ? item.title_en : item.title_zh;
         const isActive = currentPage === item.id;
 
         if (item.children) {
-            const hasActiveChild = item.children.some(child => currentPage === child.id);
+            const hasActiveChild = item.children.some(child =>
+                currentPage === child.id ||
+                (currentPage === 'projects' && currentHash === child.id)
+            );
             return `
                 <li class="nav-item dropdown ${hasActiveChild ? 'active' : ''}">
                     <span class="nav-link">${title}</span>
                     <ul class="dropdown-menu">
                         ${item.children.map(child => {
                             const childTitle = lang === 'en' ? child.title_en : child.title_zh;
-                            const childActive = currentPage === child.id ? 'active' : '';
-                            return `<li><a href="${child.url}${langParam}" class="${childActive}">${childTitle}</a></li>`;
+                            const childActive = (currentPage === child.id || (currentPage === 'projects' && currentHash === child.id)) ? 'active' : '';
+                            const childHref = child.url + langQ + (child.hash || '');
+                            return `<li><a href="${childHref}" class="${childActive}">${childTitle}</a></li>`;
                         }).join('')}
                     </ul>
                 </li>
@@ -62,7 +71,7 @@ window.renderNavbar = function() {
         } else {
             return `
                 <li class="nav-item ${isActive ? 'active' : ''}">
-                    <a href="${item.url}${langParam}" class="nav-link">${title}</a>
+                    <a href="${item.url}${langQ}" class="nav-link">${title}</a>
                 </li>
             `;
         }
@@ -71,8 +80,8 @@ window.renderNavbar = function() {
     return `
         <div class="navbar-container">
             <div class="navbar-brand">
-                <a href="?page=home${langParam}" class="brand-logo">
-                    <span class="brand-text">${lang === 'en' ? 'FCCI' : '國際商貿文化交流基金會'}</span>
+                <a href="${basePath('index.html')}${langQ}" class="brand-logo">
+                    <img src="${basePath('images/logo_FCCI.png')}" alt="FCCI - 國際商貿文化交流基金會" class="logo-image">
                 </a>
             </div>
             <button class="navbar-toggler" onclick="toggleMobileMenu()">
@@ -145,11 +154,11 @@ window.renderFooter = function() {
 // Banner Carousel Component
 window.renderBannerCarousel = function() {
     const banners = [
-        'banner1.jpg',
-        'banner2.jpg',
-        'banner3.jpg',
-        'banner4.jpg',
-        'banner5.jpg'
+        { image: 'banner1.jpg', url: 'https://www.fcci.org.tw/?p=4994' },
+        { image: 'banner2.jpg', url: 'https://www.fcci.org.tw/en/projects/event-invitation-taiwan-x-asean-smart-tech-business-opportunities-in-the-future-food-industry/' },
+        { image: 'banner3.jpg', url: 'https://www.fcci.org.tw/en/projects/hello-taiwancreating-digital-content-gaming-and-graphics-design/' },
+        { image: 'banner4.jpg', url: 'https://www.fcci.org.tw/en/projects/twin-dialogue-smart-city-partnerships-putting-theories-into-practice/' },
+        { image: 'banner5.jpg', url: null }
     ];
 
     return `
@@ -157,7 +166,9 @@ window.renderBannerCarousel = function() {
             <div class="carousel-inner">
                 ${banners.map((banner, index) => `
                     <div class="carousel-item ${index === 0 ? 'active' : ''}">
-                        <img src="images/banners/${banner}" alt="Banner ${index + 1}">
+                        ${banner.url ? `<a href="${banner.url}" target="_blank" rel="noopener noreferrer">` : ''}
+                            <img src="${basePath('images/banners/' + banner.image)}" alt="Banner ${index + 1}">
+                        ${banner.url ? '</a>' : ''}
                     </div>
                 `).join('')}
             </div>
@@ -183,15 +194,15 @@ window.renderBannerCarousel = function() {
 // News Card Component
 window.renderNewsCard = function(news, fullWidth = false) {
     const lang = window.i18n ? window.i18n.getLang() : 'zh';
-    const langParam = lang === 'en' ? '&lang=en' : '';
+    const langQ = lang === 'en' ? '&lang=en' : '';
     const title = window.i18n ? window.i18n.getLocalizedField(news, 'title') : news.title_zh;
     const excerpt = window.i18n ? window.i18n.getLocalizedField(news, 'excerpt') : news.excerpt_zh;
 
     return `
         <div class="news-card ${fullWidth ? 'full-width' : ''}">
-            <a href="?p=${news.id}${langParam}" class="news-card-link">
+            <a href="${basePath('post.html')}?p=${news.id}${langQ}" class="news-card-link">
                 <div class="news-card-image">
-                    <img src="images/news/${news.image}" alt="${title}" loading="lazy">
+                    <img src="${basePath('images/news/' + news.image)}" alt="${title}" loading="lazy">
                 </div>
                 <div class="news-card-content">
                     <h3 class="news-card-title">${title}</h3>
@@ -207,9 +218,11 @@ window.renderNewsCard = function(news, fullWidth = false) {
 window.renderPartners = function() {
     const lang = window.i18n ? window.i18n.getLang() : 'zh';
 
-    // Note: Partner logos will need to be added manually or scraped from the site
-    const strategicPartners = ['strategic1.png', 'strategic2.png'];
-    const generalPartners = Array.from({length: 16}, (_, i) => `partner${i + 1}.png`);
+    const strategicPartners = ['strategic_partner_01.png', 'strategic_partner_02.jpg'];
+    const generalPartners = Array.from({length: 16}, (_, i) => {
+        const num = String(i + 1).padStart(2, '0');
+        return `partner_${num}.png`;
+    });
 
     return `
         <div class="partners-section">
@@ -218,7 +231,7 @@ window.renderPartners = function() {
                 <div class="partners-grid strategic">
                     ${strategicPartners.map(logo => `
                         <div class="partner-logo">
-                            <img src="images/partners/${logo}" alt="Strategic Partner" loading="lazy">
+                            <img src="${basePath('images/partners/' + logo)}" alt="Strategic Partner" loading="lazy">
                         </div>
                     `).join('')}
                 </div>
@@ -228,7 +241,7 @@ window.renderPartners = function() {
                 <div class="partners-grid">
                     ${generalPartners.map(logo => `
                         <div class="partner-logo">
-                            <img src="images/partners/${logo}" alt="Partner" loading="lazy">
+                            <img src="${basePath('images/partners/' + logo)}" alt="Partner" loading="lazy">
                         </div>
                     `).join('')}
                 </div>
@@ -304,6 +317,7 @@ let carouselInterval;
 function carouselNext() {
     const items = document.querySelectorAll('.carousel-item');
     const indicators = document.querySelectorAll('.carousel-indicators button');
+    if (!items.length) return;
 
     items[currentSlide].classList.remove('active');
     indicators[currentSlide].classList.remove('active');
@@ -317,6 +331,7 @@ function carouselNext() {
 function carouselPrev() {
     const items = document.querySelectorAll('.carousel-item');
     const indicators = document.querySelectorAll('.carousel-indicators button');
+    if (!items.length) return;
 
     items[currentSlide].classList.remove('active');
     indicators[currentSlide].classList.remove('active');
@@ -330,6 +345,7 @@ function carouselPrev() {
 function carouselGoTo(index) {
     const items = document.querySelectorAll('.carousel-item');
     const indicators = document.querySelectorAll('.carousel-indicators button');
+    if (!items.length) return;
 
     items[currentSlide].classList.remove('active');
     indicators[currentSlide].classList.remove('active');
@@ -352,13 +368,69 @@ function stopCarousel() {
 window.addEventListener('DOMContentLoaded', () => {
     if (document.querySelector('.banner-carousel')) {
         startCarousel();
-
-        // Pause on hover
         const carousel = document.querySelector('.banner-carousel');
         if (carousel) {
             carousel.addEventListener('mouseenter', stopCarousel);
             carousel.addEventListener('mouseleave', startCarousel);
         }
+    }
+});
+
+// Lightbox for About Page Gallery
+let lightboxSlides = [];
+let lightboxIndex = 0;
+
+function openLightbox(index) {
+    const items = document.querySelectorAll('.filmstrip-item img');
+    lightboxSlides = Array.from(items).map(img => ({
+        src: img.src,
+        caption: img.alt || ''
+    }));
+    lightboxIndex = index;
+    showLightboxImage();
+    document.getElementById('lightbox').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox(e) {
+    if (e.target.closest('.lightbox-prev') || e.target.closest('.lightbox-next')) return;
+    if (e.target === document.getElementById('lightbox') ||
+        e.target.classList.contains('lightbox-close')) {
+        document.getElementById('lightbox').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+function lightboxPrev(e) {
+    e.stopPropagation();
+    lightboxIndex = (lightboxIndex - 1 + lightboxSlides.length) % lightboxSlides.length;
+    showLightboxImage();
+}
+
+function lightboxNext(e) {
+    e.stopPropagation();
+    lightboxIndex = (lightboxIndex + 1) % lightboxSlides.length;
+    showLightboxImage();
+}
+
+function showLightboxImage() {
+    const slide = lightboxSlides[lightboxIndex];
+    if (!slide) return;
+    document.getElementById('lightbox-img').src = slide.src;
+    const caption = document.getElementById('lightbox-caption');
+    caption.textContent = slide.caption && slide.caption !== 'Event photo' ? slide.caption : '';
+}
+
+document.addEventListener('keydown', (e) => {
+    const lb = document.getElementById('lightbox');
+    if (!lb || !lb.classList.contains('active')) return;
+    if (e.key === 'Escape') {
+        lb.classList.remove('active');
+        document.body.style.overflow = '';
+    } else if (e.key === 'ArrowLeft') {
+        lightboxPrev(e);
+    } else if (e.key === 'ArrowRight') {
+        lightboxNext(e);
     }
 });
 
@@ -378,15 +450,12 @@ function handleContactFormSubmit(event) {
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
 
-    // TODO: Send to backend API
     console.log('Form submitted:', data);
 
-    // Show success message
     alert(lang === 'en'
         ? 'Thank you for your message! We will get back to you soon.'
         : '感謝您的訊息！我們會盡快回覆您。'
     );
 
-    // Reset form
     event.target.reset();
 }

@@ -73,23 +73,13 @@ class I18n {
 
     // Switch language
     switchLanguage(lang) {
-        this.currentLang = lang;
-        document.documentElement.lang = lang === 'en' ? 'en' : 'zh-TW';
-
-        // Update URL
         const url = new URL(window.location);
         if (lang === 'en') {
             url.searchParams.set('lang', 'en');
         } else {
             url.searchParams.delete('lang');
         }
-
-        history.pushState(null, null, url);
-
-        // Reload current page
-        if (window.router) {
-            window.router.handleRoute();
-        }
+        window.location.href = url.toString();
     }
 
     // Get current language
@@ -97,11 +87,11 @@ class I18n {
         return this.currentLang;
     }
 
-    // Get localized field from object
+    // Get localized field from object (fallback: _en → _zh → bare)
     getLocalizedField(obj, fieldName) {
         const lang = this.currentLang;
         const suffix = lang === 'en' ? '_en' : '_zh';
-        return obj?.[fieldName + suffix] || obj?.[fieldName] || '';
+        return obj?.[fieldName + suffix] || obj?.[fieldName + '_zh'] || obj?.[fieldName] || '';
     }
 }
 

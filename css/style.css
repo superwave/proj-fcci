@@ -94,9 +94,8 @@ button {
 .navbar {
     background: var(--white);
     box-shadow: var(--shadow);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    position: relative;
+    z-index: 100;
 }
 
 .navbar-container {
@@ -113,9 +112,18 @@ button {
 }
 
 .brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--primary-color);
+}
+
+.logo-image {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
 }
 
 .navbar-toggler {
@@ -237,9 +245,11 @@ button {
 .banner-carousel {
     position: relative;
     width: 100%;
-    height: 560px;
+    /* 用原圖比例 1290:560 計算 aspect-ratio，寬螢幕不裁切 */
+    aspect-ratio: 1290 / 560;
     overflow: hidden;
     background: #000;
+    z-index: 1;
 }
 
 .carousel-inner {
@@ -263,10 +273,17 @@ button {
     z-index: 1;
 }
 
+.carousel-item a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
 .carousel-item img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    background: #000;
 }
 
 .carousel-control {
@@ -452,12 +469,419 @@ button {
 }
 
 /* Video Section */
-.video-container {
-    max-width: 900px;
+.video-gallery {
+    max-width: 1100px;
     margin: 0 auto;
+}
+
+.video-featured {
+    margin-bottom: 1.5rem;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: var(--shadow);
+}
+
+.video-featured iframe {
+    width: 100%;
+    aspect-ratio: 16/9;
+    display: block;
+}
+
+.video-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.video-embed-item {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.video-embed-item iframe {
+    width: 100%;
+    aspect-ratio: 16/9;
+    display: block;
+}
+
+/* About Page - Banner with Overlay */
+.about-banner {
+    position: relative;
+    background: url('../images/about/slide06.jpg') center center / cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 132px 0;
+}
+
+.about-banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    opacity: 0.35;
+}
+
+.about-banner-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.about-banner-content h2 {
+    color: #fff;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+/* About Page - Hero Image */
+.about-hero {
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+.about-hero img {
+    width: 100%;
+    max-width: 1024px;
+    border-radius: 8px;
+}
+
+/* About Page - Filmstrip Gallery */
+.about-filmstrip {
+    margin-bottom: 3rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.filmstrip-track {
+    display: flex;
+    gap: 8px;
+    padding: 8px 0;
+}
+
+.filmstrip-item {
+    flex: 0 0 auto;
+    width: 200px;
+    height: 140px;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: var(--shadow);
+}
+
+.filmstrip-item:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-hover);
+}
+
+.filmstrip-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Lightbox */
+.lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox.active {
+    display: flex;
+}
+
+.lightbox-content {
+    max-width: 90vw;
+    max-height: 85vh;
+    text-align: center;
+}
+
+.lightbox-content img {
+    max-width: 90vw;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.lightbox-caption {
+    color: #fff;
+    margin-top: 0.75rem;
+    font-size: 1rem;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 28px;
+    font-size: 2.5rem;
+    color: #fff;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 2;
+    line-height: 1;
+    transition: opacity 0.2s;
+}
+
+.lightbox-close:hover {
+    opacity: 0.7;
+}
+
+.lightbox-prev,
+.lightbox-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 3rem;
+    color: #fff;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 2;
+    padding: 0.5rem;
+    transition: opacity 0.2s;
+}
+
+.lightbox-prev:hover,
+.lightbox-next:hover {
+    opacity: 0.7;
+}
+
+.lightbox-prev { left: 20px; }
+.lightbox-next { right: 20px; }
+
+/* Project Pages */
+.project-banner {
+    position: relative;
+    padding: 130px 0;
+    background-size: cover;
+    background-repeat: no-repeat;
+    transition: background-image 0.3s;
+}
+
+.project-banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    opacity: 0.55;
+}
+
+.project-subnav {
+    display: flex;
+    margin-top: 10px;
+}
+
+.project-subnav-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+    text-decoration: none;
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: background 0.2s;
+    cursor: pointer;
+}
+
+.project-subnav-item img {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+}
+
+.project-subnav-item.active {
+    background-color: #55B332;
+    color: #fff;
+}
+
+.project-subnav-item:not(.active):hover {
+    background-color: #f0f0f0;
+}
+
+/* Two-column layout: posts left, archive right */
+.project-layout {
+    display: flex;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+.project-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.project-sidebar {
+    flex: 0 0 260px;
+}
+
+.project-sidebar h5 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #333;
+}
+
+.archive-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.archive-list li {
+    padding: 6px 0;
+    font-size: 0.9rem;
+    color: #666;
+    border-bottom: 1px solid #eee;
+}
+
+.archive-list li:last-child {
+    border-bottom: none;
+}
+
+.archive-link {
+    text-decoration: none;
+    color: #333;
+    transition: color 0.2s;
+}
+
+.archive-link:hover {
+    color: #55B332;
+}
+
+.archive-link.active {
+    color: #55B332;
+    font-weight: 700;
+}
+
+/* Post list */
+.project-post-item {
+    display: flex;
+    gap: 0;
+    background: #f5f5f5;
+    margin-bottom: 5px;
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.2s;
+    overflow: hidden;
+}
+
+.project-post-item:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.project-post-thumb {
+    flex: 0 0 33%;
+    height: 180px;
+    overflow: hidden;
+}
+
+.project-post-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.project-post-item:hover .project-post-thumb img {
+    transform: scale(1.05);
+}
+
+.project-post-info {
+    flex: 1;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.project-post-info h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.project-post-date {
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.no-posts {
+    text-align: center;
+    color: #888;
+    padding: 3rem 0;
+}
+
+/* Pagination */
+.pagination {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.pagination ul {
+    display: inline-flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 4px;
+}
+
+.pagination li a,
+.pagination li span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #333;
+    font-size: 0.9rem;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.pagination li a:hover {
+    background-color: #f0f0f0;
+}
+
+.pagination li.active a {
+    background-color: var(--tab-color, #55B332);
+    border-color: var(--tab-color, #55B332);
+    color: #fff;
+    pointer-events: none;
+}
+
+.pagination li.disabled a {
+    color: #ccc;
+    border-color: #eee;
+    pointer-events: none;
+}
+
+.pagination li.ellipsis span {
+    border: none;
+    color: #888;
 }
 
 /* Partners Section */
@@ -505,12 +929,12 @@ button {
 .partner-logo img {
     max-width: 120px;
     height: auto;
-    filter: grayscale(100%);
+    filter: grayscale(0%);
     transition: var(--transition);
 }
 
 .partner-logo:hover img {
-    filter: grayscale(0%);
+    transform: scale(1.05);
 }
 
 /* ===================================
@@ -866,7 +1290,8 @@ button {
 
 @media (max-width: 768px) {
     .banner-carousel {
-        height: 300px;
+        /* 手機上維持比例即可 */
+        aspect-ratio: 1290 / 560;
     }
 
     .carousel-control {
@@ -901,6 +1326,71 @@ button {
     .page-content {
         padding: 2rem 0;
     }
+
+    .video-featured iframe {
+        aspect-ratio: 16/9;
+    }
+
+    .video-list {
+        grid-template-columns: 1fr;
+    }
+
+    .about-banner {
+        padding: 40px 0;
+    }
+
+    .about-banner-content h2 {
+        font-size: 1.8rem;
+    }
+
+    .filmstrip-item {
+        width: 150px;
+        height: 105px;
+    }
+
+    .lightbox-prev,
+    .lightbox-next {
+        font-size: 2rem;
+    }
+
+    .project-banner {
+        padding: 40px 0;
+    }
+
+    .project-subnav {
+        flex-wrap: wrap;
+    }
+
+    .project-subnav-item {
+        flex: 1 1 50%;
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .project-subnav-item img {
+        width: 28px;
+        height: 28px;
+    }
+
+    .project-layout {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .project-sidebar {
+        flex: none;
+        width: 100%;
+    }
+
+    .project-post-item {
+        flex-direction: column;
+    }
+
+    .project-post-thumb {
+        flex: none;
+        height: 200px;
+        width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -910,10 +1400,6 @@ button {
 
     .container {
         padding: 0 15px;
-    }
-
-    .banner-carousel {
-        height: 200px;
     }
 
     .page-title {
