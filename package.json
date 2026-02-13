@@ -1,0 +1,25 @@
+{
+  "name": "proj-fcci",
+  "version": "1.0.0",
+  "description": "This is a 1:1 recreation of the FCCI (Foundation for Commerce and Culture Interchange) website using pure HTML, vanilla JavaScript, and CSS - no frameworks or libraries.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:ui": "npx playwright test --ui"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/superwave/proj-fcci.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/superwave/proj-fcci/issues"
+  },
+  "homepage": "https://github.com/superwave/proj-fcci#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}
