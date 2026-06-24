@@ -3,6 +3,9 @@
 // Helper: resolve path relative to current page
 function basePath(path) { return (window.BASE || '') + path; }
 
+// Helper: serve images as WebP (all assets converted to .webp)
+function imgPath(path) { return basePath(path.replace(/\.(jpe?g|png)$/i, '.webp')); }
+
 // Navbar Component
 window.renderNavbar = function() {
     const lang = window.i18n ? window.i18n.getLang() : 'zh';
@@ -82,7 +85,7 @@ window.renderNavbar = function() {
         <div class="navbar-container">
             <div class="navbar-brand">
                 <a href="${basePath('index.html')}${langQ}" class="brand-logo">
-                    <img src="${basePath('images/logo_FCCI.png')}" alt="FCCI - 國際商貿文化交流基金會" class="logo-image">
+                    <img src="${imgPath('images/logo_FCCI.png')}" alt="FCCI - 國際商貿文化交流基金會" class="logo-image">
                 </a>
             </div>
             <button class="navbar-toggler" onclick="toggleMobileMenu()" aria-label="${lang === 'en' ? 'Toggle navigation menu' : '開啟選單'}" aria-expanded="false" aria-controls="navbarMenu">
@@ -178,7 +181,7 @@ window.renderBannerCarousel = function() {
                     return `
                     <div class="carousel-item ${index === 0 ? 'active' : ''}" role="group" aria-roledescription="${lang === 'en' ? 'slide' : '投影片'}" aria-label="${index + 1} / ${banners.length}"${index === 0 ? '' : ' inert'}>
                         ${banner.url ? `<a href="${banner.url}" target="_blank" rel="noopener noreferrer">` : ''}
-                            <img src="${basePath('images/banners/' + banner.image)}" alt="${alt}">
+                            <img src="${imgPath('images/banners/' + banner.image)}" alt="${alt}">
                         ${banner.url ? '</a>' : ''}
                     </div>
                 `;}).join('')}
@@ -214,7 +217,7 @@ window.renderNewsCard = function(news, fullWidth = false) {
     const title = window.i18n ? window.i18n.getLocalizedField(news, 'title') : news.title_zh;
     const excerpt = window.i18n ? window.i18n.getLocalizedField(news, 'excerpt') : news.excerpt_zh;
     const imageHtml = news.image
-        ? `<div class="news-card-image"><img src="${basePath('images/news/' + news.image)}" alt="${title}" loading="lazy"></div>`
+        ? `<div class="news-card-image"><img src="${imgPath('images/news/' + news.image)}" alt="${title}" loading="lazy"></div>`
         : `<div class="news-card-image news-card-no-image"></div>`;
 
     return `
@@ -248,7 +251,7 @@ window.renderPartners = function() {
                 <div class="partners-grid strategic">
                     ${strategicPartners.map(logo => `
                         <div class="partner-logo">
-                            <img src="${basePath('images/partners/' + logo)}" alt="" loading="lazy">
+                            <img src="${imgPath('images/partners/' + logo)}" alt="" loading="lazy">
                         </div>
                     `).join('')}
                 </div>
@@ -258,7 +261,7 @@ window.renderPartners = function() {
                 <div class="partners-grid">
                     ${generalPartners.map(logo => `
                         <div class="partner-logo">
-                            <img src="${basePath('images/partners/' + logo)}" alt="" loading="lazy">
+                            <img src="${imgPath('images/partners/' + logo)}" alt="" loading="lazy">
                         </div>
                     `).join('')}
                 </div>
