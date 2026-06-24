@@ -667,7 +667,7 @@ select:focus-visible,
 /* About Page - Banner with Overlay */
 .about-banner {
     position: relative;
-    background: url('../images/about/slide06.jpg') center center / cover no-repeat;
+    background: url('../images/about/slide06.webp') center center / cover no-repeat;
     display: flex;
     align-items: center;
     justify-content: center;

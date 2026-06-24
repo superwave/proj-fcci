@@ -10,7 +10,7 @@
     // Pages in subdirs: BASE = '../'
     const BASE = window.BASE || '';
 
-    function img(path) { return BASE + 'images/' + path; }
+    function img(path) { return BASE + 'images/' + path.replace(/\.(jpe?g|png)$/i, '.webp'); }
     function page(path) { return BASE + path; }
 
     // --- Home Page ---
