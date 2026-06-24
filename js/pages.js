@@ -401,7 +401,7 @@
                 const isActive = id === tabId;
                 el.classList.toggle('active', isActive);
                 el.style.backgroundColor = isActive ? projectMeta[id].activeColor : '';
-                el.style.color = isActive ? '#fff' : '';
+                el.style.color = isActive ? '#1a1a1a' : ''; // 深色維持對比 >=4.5:1 (WCAG 1.4.3)
             });
         }
 
