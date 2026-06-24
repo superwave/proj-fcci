@@ -1186,6 +1186,7 @@ select:focus-visible,
 }
 
 .post-image {
+    width: 100%;
     max-width: 900px;
     margin: 0 auto 2rem;
     border-radius: 8px;
