@@ -13,6 +13,7 @@
     --primary-color: #0066cc;
     --secondary-color: #004a99;
     --accent-color: #ff6600;
+    --accent-on-dark: #ff9a4d; /* lighter orange for >=4.5:1 on dark footer */
     --text-dark: #333333;
     --text-light: #666666;
     --border-color: #e0e0e0;
@@ -52,6 +53,60 @@ button {
     cursor: pointer;
     border: none;
     background: none;
+}
+
+/* ===================================
+   Accessibility (WCAG 2.0 A/AA)
+   =================================== */
+
+/* Visible keyboard focus — WCAG 2.4.7 */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* Screen-reader-only content */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Skip to main content link — WCAG 2.4.1 */
+.skip-link {
+    position: absolute;
+    left: 0;
+    top: -60px;
+    z-index: 2000;
+    background: var(--primary-color);
+    color: var(--white);
+    padding: 0.75rem 1.25rem;
+    border-radius: 0 0 6px 0;
+    transition: top 0.2s ease;
+}
+.skip-link:focus {
+    top: 0;
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
 
 /* Container */
@@ -196,10 +251,21 @@ button {
     border-radius: 4px;
 }
 
-.dropdown:hover .dropdown-menu {
+.dropdown:hover .dropdown-menu,
+.dropdown:focus-within .dropdown-menu,
+.dropdown.open .dropdown-menu {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
+}
+
+/* Dropdown toggle was a non-focusable <span>; now a real button — WCAG 2.1.1 */
+.dropdown-toggle {
+    background: none;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    color: inherit;
 }
 
 .dropdown-menu li {
@@ -310,6 +376,27 @@ button {
 
 .carousel-control.next {
     right: 20px;
+}
+
+/* Autoplay pause/play control — WCAG 2.2.2 */
+.carousel-pause {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 3;
+    transition: var(--transition);
+}
+.carousel-pause:hover {
+    background: rgba(0, 0, 0, 0.75);
 }
 
 .carousel-indicators {
@@ -507,7 +594,7 @@ button {
 
 .news-list .news-card-date {
     font-size: 0.85rem;
-    color: #888;
+    color: #666;
 }
 
 .news-list .pagination {
@@ -638,6 +725,8 @@ button {
     flex: 0 0 auto;
     width: 200px;
     height: 140px;
+    padding: 0;
+    display: block;
     border-radius: 6px;
     overflow: hidden;
     cursor: pointer;
@@ -840,7 +929,7 @@ button {
 }
 
 .archive-link.active {
-    color: #55B332;
+    color: #2e7d32; /* darker green for >=4.5:1 on white — WCAG 1.4.3 */
     font-weight: 700;
 }
 
@@ -895,12 +984,12 @@ button {
 
 .project-post-date {
     font-size: 0.85rem;
-    color: #888;
+    color: #666;
 }
 
 .no-posts {
     text-align: center;
-    color: #888;
+    color: #666;
     padding: 3rem 0;
 }
 
@@ -953,7 +1042,7 @@ button {
 
 .pagination li.ellipsis span {
     border: none;
-    color: #888;
+    color: #666;
 }
 
 /* Partners Section */
@@ -1169,7 +1258,6 @@ button {
 
 .form-group input:focus,
 .form-group textarea:focus {
-    outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
 }
@@ -1252,7 +1340,7 @@ button {
 }
 
 .contact-item h4 {
-    color: var(--accent-color);
+    color: var(--accent-on-dark); /* >=4.5:1 on dark footer — WCAG 1.4.3 */
     margin-bottom: 0.5rem;
 }
 

@@ -55,10 +55,11 @@ window.renderNavbar = function() {
                 currentPage === child.id ||
                 (currentPage === 'projects' && currentHash === child.id)
             );
+            const menuId = `dropdown-${item.id}`;
             return `
                 <li class="nav-item dropdown ${hasActiveChild ? 'active' : ''}">
-                    <span class="nav-link">${title}</span>
-                    <ul class="dropdown-menu">
+                    <button type="button" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="${menuId}" onclick="toggleDropdown(this)">${title}</button>
+                    <ul class="dropdown-menu" id="${menuId}">
                         ${item.children.map(child => {
                             const childTitle = lang === 'en' ? child.title_en : child.title_zh;
                             const childActive = (currentPage === child.id || (currentPage === 'projects' && currentHash === child.id)) ? 'active' : '';
@@ -84,7 +85,7 @@ window.renderNavbar = function() {
                     <img src="${basePath('images/logo_FCCI.png')}" alt="FCCI - 國際商貿文化交流基金會" class="logo-image">
                 </a>
             </div>
-            <button class="navbar-toggler" onclick="toggleMobileMenu()">
+            <button class="navbar-toggler" onclick="toggleMobileMenu()" aria-label="${lang === 'en' ? 'Toggle navigation menu' : '開啟選單'}" aria-expanded="false" aria-controls="navbarMenu">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -131,13 +132,13 @@ window.renderFooter = function() {
                 <div class="footer-section">
                     <h3>${lang === 'en' ? 'Follow Us' : '關注我們'}</h3>
                     <div class="social-links">
-                        <a href="https://www.facebook.com/fcci.tw" target="_blank" rel="noopener">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <a href="https://www.facebook.com/fcci.tw" target="_blank" rel="noopener" aria-label="${lang === 'en' ? 'FCCI Facebook page (opens in new window)' : 'FCCI Facebook 粉絲專頁（另開新視窗）'}">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                             </svg>
                         </a>
-                        <a href="https://www.youtube.com/channel/UCRPsunSB_iR3dRbw8xchvZw" target="_blank" rel="noopener">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <a href="https://www.youtube.com/channel/UCRPsunSB_iR3dRbw8xchvZw" target="_blank" rel="noopener" aria-label="${lang === 'en' ? 'FCCI YouTube channel (opens in new window)' : 'FCCI YouTube 頻道（另開新視窗）'}">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                 <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                             </svg>
                         </a>
@@ -153,38 +154,53 @@ window.renderFooter = function() {
 
 // Banner Carousel Component
 window.renderBannerCarousel = function() {
+    const lang = window.i18n ? window.i18n.getLang() : 'zh';
     const banners = [
-        { image: 'banner1.jpg', url: 'https://www.fcci.org.tw/?p=4994' },
-        { image: 'banner2.jpg', url: 'https://www.fcci.org.tw/en/projects/event-invitation-taiwan-x-asean-smart-tech-business-opportunities-in-the-future-food-industry/' },
-        { image: 'banner3.jpg', url: 'https://www.fcci.org.tw/en/projects/hello-taiwancreating-digital-content-gaming-and-graphics-design/' },
-        { image: 'banner4.jpg', url: 'https://www.fcci.org.tw/en/projects/twin-dialogue-smart-city-partnerships-putting-theories-into-practice/' },
-        { image: 'banner5.jpg', url: null }
+        { image: 'banner1.jpg', url: 'https://www.fcci.org.tw/?p=4994',
+          alt_zh: '39屆 CACCI 年會暨 Expo 2025 ICT 專題場次', alt_en: '39th CACCI Conference & Expo 2025 ICT Sessions' },
+        { image: 'banner2.jpg', url: 'https://www.fcci.org.tw/en/projects/event-invitation-taiwan-x-asean-smart-tech-business-opportunities-in-the-future-food-industry/',
+          alt_zh: '台灣 x 東協智慧科技：未來食品產業商機', alt_en: 'Taiwan x ASEAN Smart Tech: Business Opportunities in the Future Food Industry' },
+        { image: 'banner3.jpg', url: 'https://www.fcci.org.tw/en/projects/hello-taiwancreating-digital-content-gaming-and-graphics-design/',
+          alt_zh: 'Hello Taiwan：數位內容、遊戲與圖像設計', alt_en: 'Hello Taiwan: Creating Digital Content, Gaming and Graphics Design' },
+        { image: 'banner4.jpg', url: 'https://www.fcci.org.tw/en/projects/twin-dialogue-smart-city-partnerships-putting-theories-into-practice/',
+          alt_zh: 'Twin Dialogue：智慧城市夥伴關係實踐', alt_en: 'Twin Dialogue: Smart City Partnerships Putting Theories into Practice' },
+        { image: 'banner5.jpg', url: null,
+          alt_zh: 'FCCI 國際商貿文化交流基金會活動主視覺', alt_en: 'FCCI event highlight' }
     ];
+    const regionLabel = lang === 'en' ? 'Featured events carousel' : '精選活動輪播';
+    const pauseLabel = lang === 'en' ? 'Pause carousel autoplay' : '暫停自動輪播';
 
     return `
-        <div class="banner-carousel" id="bannerCarousel">
-            <div class="carousel-inner">
-                ${banners.map((banner, index) => `
-                    <div class="carousel-item ${index === 0 ? 'active' : ''}">
+        <div class="banner-carousel" id="bannerCarousel" role="region" aria-roledescription="${lang === 'en' ? 'carousel' : '輪播'}" aria-label="${regionLabel}">
+            <div class="carousel-inner" aria-live="polite">
+                ${banners.map((banner, index) => {
+                    const alt = lang === 'en' ? banner.alt_en : banner.alt_zh;
+                    return `
+                    <div class="carousel-item ${index === 0 ? 'active' : ''}" role="group" aria-roledescription="${lang === 'en' ? 'slide' : '投影片'}" aria-label="${index + 1} / ${banners.length}"${index === 0 ? '' : ' inert'}>
                         ${banner.url ? `<a href="${banner.url}" target="_blank" rel="noopener noreferrer">` : ''}
-                            <img src="${basePath('images/banners/' + banner.image)}" alt="Banner ${index + 1}">
+                            <img src="${basePath('images/banners/' + banner.image)}" alt="${alt}">
                         ${banner.url ? '</a>' : ''}
                     </div>
-                `).join('')}
+                `;}).join('')}
             </div>
-            <button class="carousel-control prev" onclick="carouselPrev()" aria-label="Previous">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="white">
+            <button class="carousel-pause" onclick="toggleCarousel(this)" aria-label="${pauseLabel}" aria-pressed="false">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="white" aria-hidden="true">
+                    <rect x="4" y="3" width="4" height="14"/><rect x="12" y="3" width="4" height="14"/>
+                </svg>
+            </button>
+            <button class="carousel-control prev" onclick="carouselPrev()" aria-label="${lang === 'en' ? 'Previous slide' : '上一張'}">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="white" aria-hidden="true">
                     <path d="M25 10L15 20L25 30" stroke="white" stroke-width="3" fill="none"/>
                 </svg>
             </button>
-            <button class="carousel-control next" onclick="carouselNext()" aria-label="Next">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="white">
+            <button class="carousel-control next" onclick="carouselNext()" aria-label="${lang === 'en' ? 'Next slide' : '下一張'}">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="white" aria-hidden="true">
                     <path d="M15 10L25 20L15 30" stroke="white" stroke-width="3" fill="none"/>
                 </svg>
             </button>
             <div class="carousel-indicators">
                 ${banners.map((_, index) => `
-                    <button class="${index === 0 ? 'active' : ''}" onclick="carouselGoTo(${index})" aria-label="Go to slide ${index + 1}"></button>
+                    <button class="${index === 0 ? 'active' : ''}" onclick="carouselGoTo(${index})" aria-label="${lang === 'en' ? 'Go to slide ' + (index + 1) : '前往第 ' + (index + 1) + ' 張'}"></button>
                 `).join('')}
             </div>
         </div>
@@ -232,7 +248,7 @@ window.renderPartners = function() {
                 <div class="partners-grid strategic">
                     ${strategicPartners.map(logo => `
                         <div class="partner-logo">
-                            <img src="${basePath('images/partners/' + logo)}" alt="Strategic Partner" loading="lazy">
+                            <img src="${basePath('images/partners/' + logo)}" alt="" loading="lazy">
                         </div>
                     `).join('')}
                 </div>
@@ -242,7 +258,7 @@ window.renderPartners = function() {
                 <div class="partners-grid">
                     ${generalPartners.map(logo => `
                         <div class="partner-logo">
-                            <img src="${basePath('images/partners/' + logo)}" alt="Partner" loading="lazy">
+                            <img src="${basePath('images/partners/' + logo)}" alt="" loading="lazy">
                         </div>
                     `).join('')}
                 </div>
@@ -314,56 +330,85 @@ window.renderContactForm = function() {
 // Carousel Functions
 let currentSlide = 0;
 let carouselInterval;
+let carouselPaused = false;
 
-function carouselNext() {
+function setActiveSlide(index) {
     const items = document.querySelectorAll('.carousel-item');
     const indicators = document.querySelectorAll('.carousel-indicators button');
     if (!items.length) return;
 
     items[currentSlide].classList.remove('active');
-    indicators[currentSlide].classList.remove('active');
+    if (indicators[currentSlide]) indicators[currentSlide].classList.remove('active');
 
-    currentSlide = (currentSlide + 1) % items.length;
+    currentSlide = (index + items.length) % items.length;
 
+    items.forEach((item, i) => {
+        if (i === currentSlide) { item.removeAttribute('inert'); }
+        else { item.setAttribute('inert', ''); }
+    });
     items[currentSlide].classList.add('active');
-    indicators[currentSlide].classList.add('active');
+    if (indicators[currentSlide]) indicators[currentSlide].classList.add('active');
 }
 
-function carouselPrev() {
-    const items = document.querySelectorAll('.carousel-item');
-    const indicators = document.querySelectorAll('.carousel-indicators button');
-    if (!items.length) return;
-
-    items[currentSlide].classList.remove('active');
-    indicators[currentSlide].classList.remove('active');
-
-    currentSlide = (currentSlide - 1 + items.length) % items.length;
-
-    items[currentSlide].classList.add('active');
-    indicators[currentSlide].classList.add('active');
-}
-
-function carouselGoTo(index) {
-    const items = document.querySelectorAll('.carousel-item');
-    const indicators = document.querySelectorAll('.carousel-indicators button');
-    if (!items.length) return;
-
-    items[currentSlide].classList.remove('active');
-    indicators[currentSlide].classList.remove('active');
-
-    currentSlide = index;
-
-    items[currentSlide].classList.add('active');
-    indicators[currentSlide].classList.add('active');
-}
+function carouselNext() { setActiveSlide(currentSlide + 1); }
+function carouselPrev() { setActiveSlide(currentSlide - 1); }
+function carouselGoTo(index) { setActiveSlide(index); }
 
 function startCarousel() {
+    if (carouselPaused) return;
+    clearInterval(carouselInterval);
     carouselInterval = setInterval(carouselNext, 5000);
 }
 
 function stopCarousel() {
     clearInterval(carouselInterval);
 }
+
+// Explicit pause/play toggle (keyboard-operable) — WCAG 2.2.2
+function toggleCarousel(btn) {
+    const lang = window.i18n ? window.i18n.getLang() : 'zh';
+    carouselPaused = !carouselPaused;
+    btn.setAttribute('aria-pressed', String(carouselPaused));
+    if (carouselPaused) {
+        stopCarousel();
+        btn.setAttribute('aria-label', lang === 'en' ? 'Play carousel autoplay' : '播放自動輪播');
+        btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 20 20" fill="white" aria-hidden="true"><path d="M5 3l12 7-12 7z"/></svg>';
+    } else {
+        startCarousel();
+        btn.setAttribute('aria-label', lang === 'en' ? 'Pause carousel autoplay' : '暫停自動輪播');
+        btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 20 20" fill="white" aria-hidden="true"><rect x="4" y="3" width="4" height="14"/><rect x="12" y="3" width="4" height="14"/></svg>';
+    }
+}
+
+// Dropdown toggle (keyboard-operable) — WCAG 2.1.1
+function toggleDropdown(btn) {
+    const expanded = btn.getAttribute('aria-expanded') === 'true';
+    // close any other open dropdowns
+    document.querySelectorAll('.dropdown-toggle[aria-expanded="true"]').forEach(b => {
+        if (b !== btn) { b.setAttribute('aria-expanded', 'false'); b.closest('.dropdown').classList.remove('open'); }
+    });
+    btn.setAttribute('aria-expanded', String(!expanded));
+    btn.closest('.dropdown').classList.toggle('open', !expanded);
+}
+
+// Close dropdowns on outside click or Escape
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.dropdown')) {
+        document.querySelectorAll('.dropdown-toggle[aria-expanded="true"]').forEach(b => {
+            b.setAttribute('aria-expanded', 'false');
+            b.closest('.dropdown').classList.remove('open');
+        });
+    }
+});
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.dropdown-toggle[aria-expanded="true"]').forEach(b => {
+            b.setAttribute('aria-expanded', 'false');
+            b.closest('.dropdown').classList.remove('open');
+            b.focus();
+        });
+    }
+});
 
 // Auto-start carousel when page loads
 window.addEventListener('DOMContentLoaded', () => {
@@ -438,8 +483,10 @@ document.addEventListener('keydown', (e) => {
 // Mobile Menu Toggle
 function toggleMobileMenu() {
     const menu = document.getElementById('navbarMenu');
+    const toggler = document.querySelector('.navbar-toggler');
     if (menu) {
-        menu.classList.toggle('active');
+        const isOpen = menu.classList.toggle('active');
+        if (toggler) toggler.setAttribute('aria-expanded', String(isOpen));
     }
 }
 

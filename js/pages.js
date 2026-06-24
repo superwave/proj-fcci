@@ -25,6 +25,7 @@
         ];
 
         return `
+            <h1 class="sr-only">${lang === 'en' ? 'Foundation for Commerce and Culture Interchange (FCCI)' : '國際商貿文化交流基金會（FCCI）'}</h1>
             ${window.renderBannerCarousel()}
 
             <section class="home-section latest-news">
@@ -47,7 +48,7 @@
                     <div class="gallery-grid">
                         ${galleryImages.map(f => `
                             <div class="gallery-item">
-                                <img src="${img('gallery/' + f)}" alt="Event photo">
+                                <img src="${img('gallery/' + f)}" alt="" loading="lazy">
                             </div>
                         `).join('')}
                     </div>
@@ -60,22 +61,26 @@
                     <div class="video-gallery">
                         <div class="video-featured">
                             <iframe src="https://www.youtube.com/embed/SXjLqjN8gKE?rel=0"
+                                title="${lang === 'en' ? 'ASEAN Panel Discussion | Smart Dialogue: Smart City and Industry Development' : 'ASEAN 座談會｜Smart Dialogue：智慧城市與產業發展'}"
                                 frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                 allowfullscreen></iframe>
                         </div>
                         <div class="video-list">
                             <div class="video-embed-item">
                                 <iframe src="https://www.youtube.com/embed/F2n58KkWf9c?rel=0"
+                                    title="${lang === 'en' ? 'Ms. Joy Chuang, Director, FCCI | Smart Dialogue: ASEAN Smart Industry Outlook 2021' : 'FCCI 莊主任｜Smart Dialogue：2021 東協智慧產業展望'}"
                                     frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                     allowfullscreen></iframe>
                             </div>
                             <div class="video-embed-item">
                                 <iframe src="https://www.youtube.com/embed/F2n58KkWf9c?rel=0"
+                                    title="${lang === 'en' ? 'Smart Dialogue: ASEAN Smart Industry Outlook 2021 (highlight)' : 'Smart Dialogue：2021 東協智慧產業展望（精華）'}"
                                     frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                     allowfullscreen></iframe>
                             </div>
                             <div class="video-embed-item">
                                 <iframe src="https://www.youtube.com/embed/9KNdjrBw84A?rel=0"
+                                    title="${lang === 'en' ? 'IndieTale: Indian ESDM Sector, India/Taiwan Opportunities' : 'IndieTale：印度 ESDM 產業與台印商機'}"
                                     frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                     allowfullscreen></iframe>
                             </div>
@@ -114,7 +119,7 @@
             <div class="about-banner">
                 <div class="about-banner-overlay"></div>
                 <div class="about-banner-content">
-                    <h2>Who we are &amp; What we do</h2>
+                    <h1 lang="en">Who we are &amp; What we do</h1>
                 </div>
             </div>
 
@@ -125,11 +130,13 @@
                     </div>
                     <div class="about-filmstrip">
                         <div class="filmstrip-track">
-                            ${slides.map((s, i) => `
-                                <div class="filmstrip-item" onclick="openLightbox(${i})">
-                                    <img src="${img('about/' + s.image)}" alt="${s.caption || 'Event photo'}">
-                                </div>
-                            `).join('')}
+                            ${slides.map((s, i) => {
+                                const cap = s.caption || (lang === 'en' ? 'FCCI event photo' : 'FCCI 活動照片');
+                                return `
+                                <button type="button" class="filmstrip-item" onclick="openLightbox(${i})" aria-label="${(lang === 'en' ? 'View image: ' : '檢視圖片：') + cap}">
+                                    <img src="${img('about/' + s.image)}" alt="${cap}" loading="lazy">
+                                </button>
+                            `;}).join('')}
                         </div>
                     </div>
                 </div>
@@ -142,10 +149,10 @@
                 </section>
             </div>
 
-            <div id="lightbox" class="lightbox" onclick="closeLightbox(event)">
-                <button class="lightbox-close" onclick="closeLightbox(event)">&times;</button>
-                <button class="lightbox-prev" onclick="lightboxPrev(event)">&#8249;</button>
-                <button class="lightbox-next" onclick="lightboxNext(event)">&#8250;</button>
+            <div id="lightbox" class="lightbox" onclick="closeLightbox(event)" role="dialog" aria-modal="true" aria-label="${lang === 'en' ? 'Image viewer' : '圖片檢視'}">
+                <button class="lightbox-close" onclick="closeLightbox(event)" aria-label="${lang === 'en' ? 'Close' : '關閉'}">&times;</button>
+                <button class="lightbox-prev" onclick="lightboxPrev(event)" aria-label="${lang === 'en' ? 'Previous image' : '上一張'}">&#8249;</button>
+                <button class="lightbox-next" onclick="lightboxNext(event)" aria-label="${lang === 'en' ? 'Next image' : '下一張'}">&#8250;</button>
                 <div class="lightbox-content">
                     <img id="lightbox-img" src="" alt="">
                     <p id="lightbox-caption" class="lightbox-caption"></p>
@@ -313,7 +320,7 @@
         const subNav = subNavItems.map(item => {
             const isActive = item.id === _activeTab;
             const title = lang === 'en' ? item.title_en : item.title_zh;
-            const activeStyle = isActive ? `background-color:${projectMeta[item.id].activeColor};color:#fff;` : '';
+            const activeStyle = isActive ? `background-color:${projectMeta[item.id].activeColor};color:#1a1a1a;` : '';
             return `
                 <a href="#${item.id}" class="project-subnav-item ${isActive ? 'active' : ''}" style="${activeStyle}"
                    onclick="window.switchProjectTab('${item.id}', event)">
@@ -324,6 +331,7 @@
         }).join('');
 
         return `
+            <h1 class="sr-only">${lang === 'en' ? 'International Cooperation Projects' : '國際合作專案'}</h1>
             <div class="project-banner" id="project-banner"
                  style="background-image:url('${img(meta.bg)}'); background-position:${meta.bgPos};">
                 <div class="project-banner-overlay"></div>
