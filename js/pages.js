@@ -550,7 +550,10 @@
         const lang = window.i18n.getLang();
         const langQ = lang === 'en' ? '?lang=en' : '';
         const title = window.i18n.getLocalizedField(post, 'title');
-        const content = window.i18n.getLocalizedField(post, 'content');
+        // 內文來自 content.js（爬自原站）：英文缺漏時 fallback 中文；皆無時用 data 既有欄位
+        const store = (window.ARTICLE_CONTENT && window.ARTICLE_CONTENT[postId]) || {};
+        const content = (lang === 'en' ? (store.en || store.zh) : store.zh)
+            || window.i18n.getLocalizedField(post, 'content') || '';
         const image = post.image ? `<img src="${img('news/' + post.image)}" alt="${title}" class="post-image">` : '';
 
         return `
